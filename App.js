@@ -1,6 +1,7 @@
+import 'react-native-gesture-handler';
 import React from 'react';
-import Profile from './screens/Profile';
+import AppNavigator from './routes';
 
 export default function App() {
-  return <Profile />;
+  return <AppNavigator />;
 }

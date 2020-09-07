@@ -48,6 +48,9 @@ class Contacts extends Component {
   }
 
   renderContact = ({ item }) => {
+    const {
+      navigation: { navigate },
+    } = this.props;
     const { name, avatar, phone } = item;
 
     return (
@@ -55,6 +58,7 @@ class Contacts extends Component {
         name={name}
         avatar={avatar}
         phone={phone}
+        onPress={() => navigate('Profile', { contact: item })}
       />
     );
   };

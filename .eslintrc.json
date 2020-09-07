@@ -17,6 +17,7 @@
   "rules": {
     "react/jsx-filename-extension": "off",
     "no-console": "off",
-    "react/jsx-props-no-spreading": "off"
+    "react/jsx-props-no-spreading": "off",
+    "react/prop-types": "off"
   }
 }

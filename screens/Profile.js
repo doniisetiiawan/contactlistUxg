@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { fetchRandomContact } from '../utils/api';
 import colors from '../utils/colors';
 import ContactThumbnail from '../components/ContactThumbnail';
 import DetailListItem from '../components/DetailListItem';
@@ -21,31 +20,30 @@ const styles = StyleSheet.create({
   },
 });
 
-class Profile extends Component {
-  constructor(props) {
-    super(props);
+class Profile extends React.Component {
+  componentDidMount = () => {
+    const { navigation } = this.props;
+    const {
+      route: { params },
+    } = this.props;
+    const { contact: { name } } = params;
 
-    this.state = {
-      contact: {},
-    };
-  }
-
-  async componentDidMount() {
-    const contact = await fetchRandomContact();
-
-    this.setState({
-      contact,
+    navigation.setOptions({
+      title: name.split(' ')[0],
+      headerTintColor: 'white',
+      headerStyle: {
+        backgroundColor: colors.blue,
+      },
     });
-  }
+  };
 
   render() {
-    const { contact } = this.state;
     const {
-      avatar,
-      name,
-      email,
-      phone,
-      cell,
+      route: { params },
+    } = this.props;
+    const { contact } = params;
+    const {
+      avatar, name, email, phone, cell,
     } = contact;
 
     return (
