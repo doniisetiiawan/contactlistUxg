@@ -6,8 +6,10 @@ import {
   FlatList,
   ActivityIndicator,
 } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import { fetchContacts } from '../utils/api';
 import ContactThumbnail from '../components/ContactThumbnail';
+import colors from '../utils/colors';
 
 const styles = StyleSheet.create({
   container: {
@@ -34,6 +36,18 @@ class Favorites extends Component {
   }
 
   async componentDidMount() {
+    const { navigation } = this.props;
+    navigation.setOptions({
+      headerLeft: () => (
+        <MaterialIcons
+          name="menu"
+          size={24}
+          style={{ color: colors.black, marginLeft: 10 }}
+          onPress={() => navigation.openDrawer()}
+        />
+      ),
+    });
+
     try {
       const contacts = await fetchContacts();
 

@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { MaterialIcons } from '@expo/vector-icons';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import Contacts from './screens/Contacts';
 import Favorites from './screens/Favorites';
 import User from './screens/User';
@@ -12,6 +13,7 @@ import colors from './utils/colors';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+const Drawer = createDrawerNavigator();
 
 function ContactsScreens() {
   return (
@@ -43,7 +45,7 @@ function UserScreens() {
   );
 }
 
-const getTabBarIcon = (icon) => ({ tintColor }) => (
+const getDrawerItemIcon = (icon) => ({ tintColor }) => (
   <MaterialIcons
     name={icon}
     size={26}
@@ -51,35 +53,26 @@ const getTabBarIcon = (icon) => ({ tintColor }) => (
   />
 );
 
-export default function TabNavigator() {
+export default function DrawerNavigator() {
   return (
     <NavigationContainer>
-      <Tab.Navigator
-        tabBarOptions={{
-          style: {
-            backgroundColor: colors.greyLight,
-          },
-          showLabel: false,
-          activeTintColor: colors.blue,
-          inactiveTintColor: colors.greyDark,
-        }}
-      >
-        <Tab.Screen
+      <Drawer.Navigator initialRouteName="Contacts">
+        <Drawer.Screen
           name="Contacts"
           component={ContactsScreens}
-          options={{ tabBarIcon: getTabBarIcon('list') }}
+          options={{ drawerIcon: getDrawerItemIcon('list') }}
         />
-        <Tab.Screen
+        <Drawer.Screen
           name="Favorites"
           component={FavoritesScreens}
-          options={{ tabBarIcon: getTabBarIcon('star') }}
+          options={{ drawerIcon: getDrawerItemIcon('star') }}
         />
-        <Tab.Screen
+        <Drawer.Screen
           name="User"
           component={UserScreens}
-          options={{ tabBarIcon: getTabBarIcon('person') }}
+          options={{ drawerIcon: getDrawerItemIcon('person') }}
         />
-      </Tab.Navigator>
+      </Drawer.Navigator>
     </NavigationContainer>
   );
 }

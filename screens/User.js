@@ -32,13 +32,20 @@ class User extends Component {
 
   componentDidMount = async () => {
     const { navigation } = this.props;
-    console.log(navigation.setOptions);
     navigation.setOptions({
       title: 'Me',
       headerTintColor: 'white',
       headerStyle: {
         backgroundColor: colors.blue,
       },
+      headerLeft: () => (
+        <MaterialIcons
+          name="menu"
+          size={24}
+          style={{ color: colors.black, marginLeft: 10 }}
+          onPress={() => navigation.openDrawer()}
+        />
+      ),
       headerRight: () => (
         <MaterialIcons
           name="settings"
