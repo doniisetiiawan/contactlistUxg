@@ -10,6 +10,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { fetchContacts } from '../utils/api';
 import ContactListItem from '../components/ContactListItem';
 import colors from '../utils/colors';
+import store from '../store';
 
 const styles = StyleSheet.create({
   container: {
@@ -26,9 +27,9 @@ class Contacts extends Component {
     super(props);
 
     this.state = {
-      contacts: [],
-      loading: true,
-      error: false,
+      contacts: store.getState().contacts,
+      loading: store.getState().isFetchingContacts,
+      error: store.getState().error,
     };
   }
 
@@ -45,20 +46,19 @@ class Contacts extends Component {
       ),
     });
 
-    try {
-      const contacts = await fetchContacts();
+    this.unsubscribe = store.onChange(() => this.setState({
+      contacts: store.getState().contacts,
+      loading: store.getState().isFetchingContacts,
+      error: store.getState().error,
+    }));
 
-      this.setState({
-        contacts,
-        loading: false,
-        error: false,
-      });
-    } catch (e) {
-      this.setState({
-        loading: false,
-        error: true,
-      });
-    }
+    const contacts = await fetchContacts();
+
+    store.setState({ contacts, isFetchingContacts: false });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
   }
 
   renderContact = ({ item }) => {

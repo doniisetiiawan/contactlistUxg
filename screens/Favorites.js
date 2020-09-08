@@ -10,6 +10,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { fetchContacts } from '../utils/api';
 import ContactThumbnail from '../components/ContactThumbnail';
 import colors from '../utils/colors';
+import store from '../store';
 
 const styles = StyleSheet.create({
   container: {
@@ -29,9 +30,9 @@ class Favorites extends Component {
     super(props);
 
     this.state = {
-      contacts: [],
-      loading: true,
-      error: false,
+      contacts: store.getState().contacts,
+      loading: store.getState().isFetchingContacts,
+      error: store.getState().error,
     };
   }
 
@@ -48,24 +49,32 @@ class Favorites extends Component {
       ),
     });
 
-    try {
-      const contacts = await fetchContacts();
+    const { contacts } = this.state;
 
-      this.setState({
-        contacts,
-        loading: false,
-        error: false,
-      });
-    } catch (e) {
-      this.setState({
-        loading: false,
-        error: true,
+    this.unsubscribe = store.onChange(() => this.setState({
+      contacts: store.getState().contacts,
+      loading: store.getState().isFetchingContacts,
+      error: store.getState().error,
+    }));
+
+    if (contacts.length === 0) {
+      const fetchedContacts = await fetchContacts();
+
+      store.setState({
+        contacts: fetchedContacts,
+        isFetchingContacts: false,
       });
     }
   }
 
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
   renderFavoriteThumbnail = ({ item }) => {
-    const { navigation: { navigate } } = this.props;
+    const {
+      navigation: { navigate },
+    } = this.props;
     const { avatar } = item;
 
     return (
@@ -78,15 +87,16 @@ class Favorites extends Component {
 
   render() {
     const { loading, contacts, error } = this.state;
-    const favorites = contacts.filter((contact) => contact.favorite);
+    const favorites = contacts.filter(
+      (contact) => contact.favorite,
+    );
 
     return (
       <View style={styles.container}>
         {loading && <ActivityIndicator size="large" />}
         {error && <Text>Error...</Text>}
 
-        {!loading
-        && !error && (
+        {!loading && !error && (
           <FlatList
             data={favorites}
             keyExtractor={keyExtractor}
